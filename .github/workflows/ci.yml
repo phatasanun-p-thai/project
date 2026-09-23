@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-and-build:
+    name: Lint, Typecheck & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      # NEXT_PUBLIC_* vars ถูก inline ตอน build (Next.js) — ตั้งเป็น GitHub Secrets
+      # (Settings > Secrets and variables > Actions) เพื่อให้มีค่าใน CI.
+      # NOTE: build ของโปรเจกต์นี้ผ่านได้โดยไม่มีค่าเหล่านี้ (pages เป็น dynamic /
+      # server-rendered) แต่แนะนำให้ตั้งไว้เพื่อความถูกต้องเวลา static-render หน้าใหม่ๆ
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        # ถ้า build ผิดพลาด (exit code != 0) ขั้นนี้จะ fail โดยอัตโนมัติ
+        run: npm run build
