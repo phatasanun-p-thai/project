@@ -46,6 +46,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test
+        run: npm run test
+
       - name: Build
         # ถ้า build ผิดพลาด (exit code != 0) ขั้นนี้จะ fail โดยอัตโนมัติ
         run: npm run build
