@@ -11,7 +11,7 @@
 | Supabase URL | ⚠️ ต้องตั้ง | ใส่ค่าโปรเจกต์จริง (`.env.example` เป็น placeholder) |
 | Supabase Anon Key | ⚠️ ต้องตั้ง | ใช้เฉพาะ anon key — **ห้าม** ใช้ service_role |
 | Authentication Redirect | ⚠️ ตั้งใน Supabase Dashboard | Site URL = Production URL (ไม่มี OAuth callback ในแอปนี้) |
-| Production URL | ℹ️ | ได้จาก Vercel (แบบ auto `xxx.vercel.app` หรือ custom domain) |
+| Production URL | ✅ `https://contorller.vercel.app` | อัปเดตวันนี้ (deploy ผ่าน Vercel CLI) |
 | GitHub Integration | ✅ OK | Git repo + `origin` ชี้ไป GitHub แล้ว, CI workflow พร้อม |
 | RLS / Migrations | ⚠️ ต้องรันใน Supabase | `supabase/migrations/*.sql` — รันเรียงตามชื่อ: `000_schema` → `000_maintenance_rls` → `001_hardening` → `002_machine_id_unique` |
 | Secrets ใน Source Code | ✅ OK | ไม่มี `.env*`/service_role ขึ้น repo (`.gitignore` ครอบแล้ว) |

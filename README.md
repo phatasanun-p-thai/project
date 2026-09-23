@@ -94,7 +94,8 @@ npm run test     # vitest run
 
 ## Vercel URL
 
-Production URL ยังไม่ได้ตั้งค่า (รอขั้นตอน Deploy) — เมื่อ deploy แล้วจะระบุที่ช่องนี้
+- Production: <https://contorller.vercel.app>
+- Deployment ล่าสุด: <https://contorller-z7ub3n8fh-phatasanun-p-1708.vercel.app>
 
 ## AI Usage
 
