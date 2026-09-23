@@ -45,6 +45,7 @@ $$;
 -- with role = 'technician' (email/name are already user-facing in the app).
 -- ---------------------------------------------------------------------------
 
+drop policy if exists "profiles_select_self_or_technicians" on public.profiles;
 create policy "profiles_select_self_or_technicians"
   on public.profiles
   for select

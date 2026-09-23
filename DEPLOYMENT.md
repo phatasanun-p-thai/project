@@ -13,7 +13,7 @@
 | Authentication Redirect | ⚠️ ตั้งใน Supabase Dashboard | Site URL = Production URL (ไม่มี OAuth callback ในแอปนี้) |
 | Production URL | ℹ️ | ได้จาก Vercel (แบบ auto `xxx.vercel.app` หรือ custom domain) |
 | GitHub Integration | ✅ OK | Git repo + `origin` ชี้ไป GitHub แล้ว, CI workflow พร้อม |
-| RLS / Migrations | ⚠️ ต้องรันใน Supabase | `supabase/migrations/*.sql` (2 ไฟล์) ก่อนใช้งาน |
+| RLS / Migrations | ⚠️ ต้องรันใน Supabase | `supabase/migrations/*.sql` — รันเรียงตามชื่อ: `000_schema` → `000_maintenance_rls` → `001_hardening` → `002_machine_id_unique` |
 | Secrets ใน Source Code | ✅ OK | ไม่มี `.env*`/service_role ขึ้น repo (`.gitignore` ครอบแล้ว) |
 
 ## 2. ขั้นตอน Deployment

@@ -52,6 +52,7 @@ Migrations (ต้องรันใน Supabase ตามลำดับ):
 
 | ไฟล์ | รายละเอียด |
 |---|---|
+| `supabase/migrations/202609230000_schema.sql` | สร้างตาราง (profiles/machines/alarms/maintenance_records) + triggers + signup trigger |
 | `supabase/migrations/202609230000_maintenance_rls.sql` | RLS สำหรับ maintenance_records + helper functions |
 | `supabase/migrations/202609230001_rls_hardening.sql` | RLS profiles/machines/alarms + trigger ป้องกันการปลอมแปลง |
 | `supabase/migrations/202609230002_machine_id_unique.sql` | Dedup + unique constraint บน `machine_id` |

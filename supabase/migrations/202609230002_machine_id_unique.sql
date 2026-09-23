@@ -5,52 +5,75 @@
 
 -- Dedup: merge machines ตัวซ้ำ — ย้ายอ้างอิงจาก alarms/maintenance_records
 -- ไปยังเครื่องจักรตัวแรก (created_at, id) ก่อน แล้วลบตัวซ้ำ
-with dup as (
-  select m2.id as duplicate_id, k.keep_id
-  from public.machines m2
-  join (
-    select machine_id, min(id) as keep_id
-    from public.machines
-    where machine_id is not null
-    group by machine_id
-  ) k on k.machine_id = m2.machine_id
-  where m2.id <> k.keep_id
+with ranked as (
+  select
+    id,
+    machine_id,
+    row_number() over (
+      partition by machine_id
+      order by created_at asc, id asc
+    ) as rn
+  from public.machines
+  where machine_id is not null
+),
+dups as (
+  select r.id as dup_id, k.id as keep_id
+  from ranked r
+  join machines k on k.machine_id = r.machine_id
+  where r.rn > 1
+    and k.id = (
+      select id from ranked rk
+      where rk.machine_id = r.machine_id and rk.rn = 1
+      limit 1
+    )
 )
 update public.alarms a
 set machine_id = d.keep_id
-from dup d
-where a.machine_id = d.duplicate_id;
+from dups d
+where a.machine_id = d.dup_id;
 
-with dup as (
-  select m2.id as duplicate_id, k.keep_id
-  from public.machines m2
-  join (
-    select machine_id, min(id) as keep_id
-    from public.machines
-    where machine_id is not null
-    group by machine_id
-  ) k on k.machine_id = m2.machine_id
-  where m2.id <> k.keep_id
+with ranked as (
+  select
+    id,
+    machine_id,
+    row_number() over (
+      partition by machine_id
+      order by created_at asc, id asc
+    ) as rn
+  from public.machines
+  where machine_id is not null
+),
+dups as (
+  select r.id as dup_id, k.id as keep_id
+  from ranked r
+  join machines k on k.machine_id = r.machine_id
+  where r.rn > 1
+    and k.id = (
+      select id from ranked rk
+      where rk.machine_id = r.machine_id and rk.rn = 1
+      limit 1
+    )
 )
 update public.maintenance_records mr
 set machine_id = d.keep_id
-from dup d
-where mr.machine_id = d.duplicate_id;
+from dups d
+where mr.machine_id = d.dup_id;
 
-with dup as (
-  select m2.id as duplicate_id, k.keep_id
-  from public.machines m2
-  join (
-    select machine_id, min(id) as keep_id
-    from public.machines
-    where machine_id is not null
-    group by machine_id
-  ) k on k.machine_id = m2.machine_id
-  where m2.id <> k.keep_id
+with ranked as (
+  select
+    id,
+    machine_id,
+    row_number() over (
+      partition by machine_id
+      order by created_at asc, id asc
+    ) as rn
+  from public.machines
+  where machine_id is not null
 )
 delete from public.machines m
-using dup d
-where m.id = d.duplicate_id;
+where m.id in (
+  select id from ranked where rn > 1
+);
 
 -- Unique constraint (สร้างถ้ายังไม่มี)
 do $$
